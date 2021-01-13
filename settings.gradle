@@ -1,0 +1,4 @@
+include ':JLintRules'
+include ':JLintAAR'
+include ':app'
+rootProject.name = "JLint"
