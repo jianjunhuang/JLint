@@ -1,56 +1,41 @@
 package xyz.juncat.jlintrules
 
-import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.*
+import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.UClass
-import org.jetbrains.uast.UElement
-import org.jetbrains.uast.UExpression
-import java.util.*
 
 
 @Suppress("UnstableApiUsage")
 class ToastUtilsDetector : Detector(), Detector.UastScanner {
 
-    override fun getApplicableUastTypes(): List<Class<out UElement>> {
-        return listOf(UElement::class.java)
+    override fun getApplicableMethodNames(): List<String>? {
+        return listOf("makeText", "show")
     }
 
-    override fun createUastHandler(context: JavaContext): UElementHandler {
-        return object : UElementHandler() {
-            override fun visitCallExpression(node: UCallExpression) {
-                val resolvedName = node.classReference?.resolvedName
-                val methodName = node.methodName
-                println("resolvedName: $resolvedName, methodName:$methodName")
-                context.report(
-                    ISSUE,
-                    node,
-                    context.getNameLocation(node),
-                    "resolvedName: $resolvedName, methodName:$methodName, ${node.receiver}"
-                )
-                if (resolvedName == "Toast" && methodName == "makeText") {
-                    context.report(
-                        ISSUE,
-                        node,
-                        context.getNameLocation(node),
-                        "Use ToastUtils instead!"
-                    )
-                }
-            }
-
-            override fun visitExpression(node: UExpression) {
-                context.report(
-                    ISSUE,
-                    node,
-                    context.getNameLocation(node),
-                    "${node.toString()}"
-                )
-            }
-
-            override fun visitClass(node: UClass) {
-
-            }
+    override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
+        if (!context.evaluator.isMemberInClass(method, "android.widget.Toast")) {
+            return
         }
+
+        val args = node.valueArguments
+
+        var fix: LintFix? = null
+        if (args.size == 3) {
+            fix = LintFix.create()
+                .name("replace to ToastUtils.show(${args[1].asSourceString()})")
+                .replace()
+                .with("ToastUtils.show(${args[1].asSourceString()})")
+                .build()
+        }
+
+        context.report(
+            ISSUE, method, context.getCallLocation(
+                node,
+                includeReceiver = true,
+                includeArguments = true
+            ), "Use ToastUtils instead !", fix
+        )
+
     }
 
     companion object {
