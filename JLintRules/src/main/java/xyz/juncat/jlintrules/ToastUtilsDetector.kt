@@ -3,6 +3,8 @@ package xyz.juncat.jlintrules
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UCallExpression
+import java.io.InputStream
+import java.util.*
 
 
 @Suppress("UnstableApiUsage")
@@ -13,6 +15,7 @@ class ToastUtilsDetector : Detector(), Detector.UastScanner {
     }
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
+        println("visitMethodCall>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         if (!context.evaluator.isMemberInClass(method, "android.widget.Toast")) {
             return
         }
