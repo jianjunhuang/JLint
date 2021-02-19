@@ -9,7 +9,8 @@ class JIssueRegistry : IssueRegistry() {
     override val issues: List<Issue>
         get() = arrayListOf(
             ToastUtilsDetector.ISSUE,
-            OreoTranslucentCrashDetector.ISSUE
+            OreoTranslucentCrashDetector.ISSUE,
+            LogDetector.ISSUE
         )
 
     override val api: Int

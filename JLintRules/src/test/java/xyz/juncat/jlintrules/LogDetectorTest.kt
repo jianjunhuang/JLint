@@ -11,9 +11,10 @@ import java.io.InputStream
 import java.util.*
 
 @Suppress("UnstableApiUsage")
-class ToastUtilsDetectorTest : LintDetectorTest() {
+class LogDetectorTest : LintDetectorTest() {
 
     private var sdkDir = ""
+
 
     override fun setUp() {
         super.setUp()
@@ -24,41 +25,38 @@ class ToastUtilsDetectorTest : LintDetectorTest() {
 
 
     private val inCorrectMethodCallKt = """
-     package xyz.juncat.jlint
-
-    import android.os.Bundle
-    import android.util.Log
-    import android.widget.Toast
-    import androidx.appcompat.app.AppCompatActivity
-    
-    class MainActivity : AppCompatActivity() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_main)
-    
-            Toast.makeText(this, "test", Toast.LENGTH_SHORT).show()
-    
-            Log.i("TAG", "onCreate: ")
+       package xyz.juncat.jlint
+        
+        import android.os.Bundle
+        import android.util.Log
+        import android.widget.Toast
+        import androidx.appcompat.app.AppCompatActivity
+        
+        class MainActivity : AppCompatActivity() {
+            override fun onCreate(savedInstanceState: Bundle?) {
+                super.onCreate(savedInstanceState)
+                setContentView(R.layout.activity_main)
+        
+                Log.i("TAG", "onCreate: ")
+            }
         }
-    }
     """.trimIndent()
 
     private val correctMethodCallKt = """
         package xyz.juncat.jlint
-
         class Test {
             fun test() {
-                ToastUtils.show("test")
+                HLog.i("TAG","test");
             }
         } 
     """.trimIndent()
 
-    override fun getDetector(): Detector = ToastUtilsDetector()
+    override fun getDetector(): Detector = LogDetector()
 
-    override fun getIssues(): MutableList<Issue> = mutableListOf(ToastUtilsDetector.ISSUE)
+    override fun getIssues(): MutableList<Issue> = mutableListOf(LogDetector.ISSUE)
 
     @Test
-    fun testInCorrectToastCall() {
+    fun testInCorrectLogCall() {
         lint().requireCompileSdk()
             .sdkHome(File(sdkDir))
             .files(kotlin(inCorrectMethodCallKt).indented())
@@ -67,7 +65,7 @@ class ToastUtilsDetectorTest : LintDetectorTest() {
     }
 
     @Test
-    fun testCorrectToastCall() {
+    fun testCorrectLogCall() {
         lint().requireCompileSdk()
             .sdkHome(File(sdkDir))
             .files(kotlin(correctMethodCallKt).indented())

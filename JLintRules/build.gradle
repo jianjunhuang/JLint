@@ -16,16 +16,16 @@ lintOptions {
 
 jar {
     manifest {
-        attributes("Lint-Registry": "xyz.juncat.jlintrules.JIssueRegistry")
+        attributes("Lint-Registry-V2": "xyz.juncat.jlintrules.JIssueRegistry")
     }
 }
 dependencies {
     // For a description of the below dependencies, see the main project README
-    compileOnly "com.android.tools.lint:lint-api:27.1.1"
-    compileOnly "com.android.tools.lint:lint-checks:27.1.1"
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.21"
+    compileOnly "com.android.tools.lint:lint-api:27.1.2"
+    compileOnly "com.android.tools.lint:lint-checks:27.1.2"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30"
     testImplementation "junit:junit:4.13.1"
-    testImplementation "com.android.tools.lint:lint:27.1.1"
-    testImplementation "com.android.tools.lint:lint-tests:27.1.1"
-    testImplementation "com.android.tools:testutils:27.1.1"
+    testImplementation "com.android.tools.lint:lint:27.1.2"
+    testImplementation "com.android.tools.lint:lint-tests:27.1.2"
+    testImplementation "com.android.tools:testutils:27.1.2"
 }

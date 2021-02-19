@@ -7,7 +7,7 @@ import java.io.InputStream
 import java.util.*
 
 
-@Suppress("UnstableApiUsage")
+
 class ToastUtilsDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableMethodNames(): List<String>? {
@@ -15,7 +15,7 @@ class ToastUtilsDetector : Detector(), Detector.UastScanner {
     }
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
-        println("visitMethodCall>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        super.visitMethodCall(context, node, method)
         if (!context.evaluator.isMemberInClass(method, "android.widget.Toast")) {
             return
         }
