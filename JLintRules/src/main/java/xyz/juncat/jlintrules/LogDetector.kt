@@ -17,11 +17,21 @@ class LogDetector : Detector(), Detector.UastScanner {
         if (!context.evaluator.isMemberInClass(method, "android.util.Log")) {
             return
         }
+
+        //获取方法中的参数列表
+        val args = node.valueArguments
+        val fix = LintFix.create()
+            .name("replace Log to HLog")
+            .replace()//替换为下面的代码
+            .with("HLog.${node.methodName}(${args[0].asSourceString()})")
+            .build()
+
         context.report(
             ISSUE,
             method,
             context.getCallLocation(node, includeReceiver = true, includeArguments = true),
-            "Use HLog instead of Log"
+            "Use HLog instead of Log",
+            fix
         )
     }
 
